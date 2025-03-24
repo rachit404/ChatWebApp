@@ -2,6 +2,7 @@ import { Error } from "mongoose";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
+import cloudinary from "../lib/cloudinary.js";
 
 const signup = async (req, res) => {
   const { email, password, fullName } = req.body;
@@ -78,6 +79,40 @@ const logout = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-  const { fullName, profilePic } = req.body;
+  try {
+    const { profilePic } = req.body;
+    const userId = req.user._id;
+    if (!profilePic)
+      return res.status(400).json({ message: "Profile Picture is required" });
+
+    //! Upload to cloudinary
+    const upload_res = await cloudinary.uploader.upload(profilePic);
+    console.log("Upload response:", upload_res);
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        profilePic: upload_res.secure_url,
+      },
+      { new: true } //* gives user after updates have been applied
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    return res
+      .status(200)
+      .json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.log("Error in updateProfile controller", error.message);
+    return res.status(500).json("Internal server error");
+  }
 };
-export { signup, login, logout, updateProfile };
+
+const checkAuth = (req, res) => {
+  try {
+    return res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller: ", error.message);
+    return res.status(500).json("Internal server error");
+  }
+};
+export { signup, login, logout, updateProfile, checkAuth };
