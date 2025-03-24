@@ -61,4 +61,4 @@ const sendMessage = async (req, res) => {
   }
 };
 
-export { getUsers, getMessages, sendMessage };
+export { getUsersForSidebar, getMessages, sendMessage };
