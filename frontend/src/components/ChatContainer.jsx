@@ -1,14 +1,34 @@
-import React, { useEffect } from "react";
-import { useChatStore } from "../store/useChatStore";
+import { useChatStore } from "../store/useChatStore.js";
+import { useEffect, useRef } from "react";
+
+import ChatHeader from "./ChatHeader.jsx";
+import MessageInput from "./MessageInput.jsx";
 import MessageSkeleton from "./skeletons/MessageSkeleton.jsx";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 const ChatContainer = () => {
   const { messages, getMessages, isMessagesLoading, selectedUser } =
     useChatStore();
+  const { authUser } = useAuthStore();
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessages(selectedUser._id);
-  }, [selectedUser]);
+  }, [selectedUser._id, getMessages]);
+
+  // useEffect(() => {
+  //   if (messageEndRef.current && messages) {
+  //     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }, [messages]);
+
+  const formatMessageTime = (date) => {
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
 
   if (isMessagesLoading) {
     return (
