@@ -2,7 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios.js";
 
-export const useThemeStore = create((set) => ({
+export const useChatStore = create((set) => ({
   messages: [],
   users: [],
   selectedUser: null,
@@ -33,5 +33,9 @@ export const useThemeStore = create((set) => ({
     } finally {
       set({ isMessagesLoading: false });
     }
+  },
+
+  setSelectedUser: (selectedUser) => {
+    set({ selectedUser });
   },
 }));
