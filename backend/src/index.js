@@ -5,7 +5,7 @@ import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import { connectDB } from "../src/lib/db.js";
 import dotenv from "dotenv";
-import { app, server, io } from "./socket.js";
+import { app, server } from "./lib/socket.js";
 dotenv.config();
 const PORT = process.env.PORT || 5001;
 
