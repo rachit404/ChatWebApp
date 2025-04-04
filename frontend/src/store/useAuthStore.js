@@ -97,6 +97,12 @@ export const useAuthStore = create((set, get) => ({
 
     const socket = io(BACKEND_URL);
     socket.connect();
+    // console.log("MySocket: ", socket);
+
+    set({ socket });
   },
-  disconnectSocket: () => {},
+
+  disconnectSocket: () => {
+    if (get().socket?.connected) get().socket.disconnect();
+  },
 }));
